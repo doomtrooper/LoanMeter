@@ -13,14 +13,14 @@ import java.util.ArrayList;
 /**
  * Created by razor on 18/5/15.
  */
-public class DatabaseHandler extends SQLiteOpenHelper{
+public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION=DatabaseDetails.DATABASE_VERSION;
+    private static final int DATABASE_VERSION = DatabaseDetails.DATABASE_VERSION;
 
-    private static final String DATABASE_NAME=DatabaseDetails.DATABASE_NAME;
+    private static final String DATABASE_NAME = DatabaseDetails.DATABASE_NAME;
 
-    public static final String TABLE_PERSON=DatabaseDetails.TABLE_Person;
-    public static final String TABLE_TRANSACTION=DatabaseDetails.TABLE_Transaction;
+    public static final String TABLE_PERSON = DatabaseDetails.TABLE_Person;
+    public static final String TABLE_TRANSACTION = DatabaseDetails.TABLE_Transaction;
 
     // Person Table Columns names
     public static String KEY_PERSON_ID = DatabaseDetails.KEY_Person_ID;
@@ -37,14 +37,20 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     // Table Create Statements
     // Person table create statement
     private static final String CREATE_TABLE_PERSON = "CREATE TABLE "
-            + TABLE_PERSON + "(" + KEY_PERSON_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_PERSON_NAME
-            + " TEXT UNIQUE," + KEY_PERSON_IS_DELETED + " INTEGER DEFAULT 0," + KEY_PERSON_COMMENTS
+            + TABLE_PERSON + "("
+            + KEY_PERSON_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_PERSON_NAME + " TEXT UNIQUE,"
+            + KEY_TRANSACTION_AMOUNT + " DOUBLE NOT NULL"
+            + KEY_PERSON_IS_DELETED + " INTEGER DEFAULT 0," + KEY_PERSON_COMMENTS
             + " TEXT," + ")";
 
     // Transaction table create statement
     private static final String CREATE_TABLE_TRANSACTION = "CREATE TABLE " + TABLE_TRANSACTION
-            + "(" + KEY_TRANSACTION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_TRANSACTION_PERSON_ID + " INTEGER,"
-            + KEY_TRANSACTION_TIMESTAMP + " INTEGER DEFAULT CURRENT_TIMESTAMP" + " FOREIGN KEY("+KEY_TRANSACTION_PERSON_ID+") REFERENCES "+TABLE_PERSON+" ("+KEY_PERSON_ID+")"+ ")";
+            + "("
+            + KEY_TRANSACTION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_TRANSACTION_PERSON_ID + " INTEGER,"
+            + KEY_TRANSACTION_TIMESTAMP + " INTEGER DEFAULT CURRENT_TIMESTAMP"
+            + " FOREIGN KEY(" + KEY_TRANSACTION_PERSON_ID + ") REFERENCES " + TABLE_PERSON + " (" + KEY_PERSON_ID + ")" + ")";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

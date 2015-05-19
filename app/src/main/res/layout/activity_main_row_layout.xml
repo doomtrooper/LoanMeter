@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <View
+        android:id="@+id/strut"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:background="#000000" />
+
+    <TextView
+        android:id="@+id/rowname"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/strut"
+        android:ems="10"
+        android:gravity="center_vertical"
+        android:minEms="@android:integer/config_shortAnimTime"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="20sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/rowname" >
+        <View
+            android:id="@+id/right_strut"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/strut"
+            android:layout_centerHorizontal="true"
+            android:background="#000000" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/rowname" >
+
+            <View
+                android:id="@+id/right_strut1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/strut"
+                android:layout_centerHorizontal="true"
+                android:background="#000000" />
+
+
+            <TextView
+                android:id="@+id/rowamount"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/right_strut1"
+                android:ems="10"
+                android:gravity="center|left"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="20sp"
+                android:layout_alignRight="@+id/logo"
+                android:layout_alignEnd="@+id/logo" />
+
+            <TextView
+                android:id="@+id/logo"
+                android:layout_width="20dp"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:ems="10"
+
+                android:gravity="center"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/datebutton"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_alignBottom="@+id/rowamount"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/right_strut1"
+                android:ems="10"
+                android:gravity="bottom|right"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="10sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

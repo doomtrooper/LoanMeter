@@ -4,6 +4,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import com.bitnoobwa.loanmeter.adapter.PersonCustomAdapter;
+import com.bitnoobwa.loanmeter.helper.EntryDataSource;
+import com.bitnoobwa.loanmeter.model.Person;
+
+import java.util.ArrayList;
 
 
 public class MainActivityLoanMeter extends AppCompatActivity {
@@ -11,7 +18,23 @@ public class MainActivityLoanMeter extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_activity_loan_meter);
+        EntryDataSource dataSource = new EntryDataSource(getApplicationContext());
+        ArrayList<Person> personArrayList = new ArrayList<>();
+        personArrayList = dataSource.allPersonList();
+        if(personArrayList.isEmpty() || personArrayList==null)
+            setContentView(R.layout.activity_main_activity_loan_meter_no_entry);
+        else {
+            setContentView(R.layout.activity_main_activity_loan_meter_listview);
+            populateEntriesListView(personArrayList);
+        }
+        //setContentView(R.layout.activity_main_activity_loan_meter);
+
+    }
+
+    private void populateEntriesListView(ArrayList<Person> personArrayList) {
+        PersonCustomAdapter personCustomAdapter = new PersonCustomAdapter(this,R.layout.activity_main_row_layout2,personArrayList);
+        final ListView listView = (ListView) findViewById(R.id.person);
+        listView.setAdapter(personCustomAdapter);
     }
 
 

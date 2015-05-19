@@ -1,5 +1,7 @@
 package com.bitnoobwa.loanmeter.model;
 
+import com.bitnoobwa.loanmeter.exceptions.EmptyTransactionListException;
+
 import java.util.ArrayList;
 
 /**
@@ -88,6 +90,16 @@ public class Person {
 
     public void setTransactionList(ArrayList<Transaction> transactionList) {
         this.transactionList = transactionList;
+    }
+
+    public double getTotalTransactionAmount() throws EmptyTransactionListException {
+        double amount=0.0;
+        ArrayList<Transaction> transactionArrayList=getTransactionList();
+        if(transactionArrayList==null || transactionArrayList.isEmpty())
+            throw new EmptyTransactionListException("The transaction List is empty or NULL");
+        for(Transaction transaction:getTransactionList())
+            amount+=transaction.getAmount();
+        return amount;
     }
 
     @Override
