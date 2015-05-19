@@ -19,8 +19,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     private static final String DATABASE_NAME=DatabaseDetails.DATABASE_NAME;
 
-    private static final String TABLE_PERSON=DatabaseDetails.TABLE_Person;
-    private static final String TABLE_TRANSACTION=DatabaseDetails.TABLE_Transaction;
+    public static final String TABLE_PERSON=DatabaseDetails.TABLE_Person;
+    public static final String TABLE_TRANSACTION=DatabaseDetails.TABLE_Transaction;
 
     // Person Table Columns names
     public static String KEY_PERSON_ID = DatabaseDetails.KEY_Person_ID;
@@ -38,7 +38,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     // Person table create statement
     private static final String CREATE_TABLE_PERSON = "CREATE TABLE "
             + TABLE_PERSON + "(" + KEY_PERSON_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_PERSON_NAME
-            + " TEXT," + KEY_PERSON_IS_DELETED + " INTEGER DEFAULT 0," + KEY_PERSON_COMMENTS
+            + " TEXT UNIQUE," + KEY_PERSON_IS_DELETED + " INTEGER DEFAULT 0," + KEY_PERSON_COMMENTS
             + " TEXT," + ")";
 
     // Transaction table create statement

@@ -11,26 +11,46 @@ public class Person {
     private int isDeleted;
     private Transaction transaction;
     private ArrayList<Transaction> transactionList;
+    private String personComments;
+
+    public String getPersonComments() {
+        return personComments;
+    }
+
+    public void setPersonComments(String personComments) {
+        this.personComments = personComments;
+    }
 
     public Person() {
     }
 
-    public Person(String personName, Transaction transaction) {
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+    }
+
+    public Person(String personName, Transaction transaction,String personComments) {
         this.personName = personName;
         this.transaction = transaction;
+        this.personComments = personComments;
         this.personId = Integer.parseInt(null);
         this.isDeleted = Integer.parseInt(null);
     }
 
-    public Person(String personName, int isDeleted, Transaction transaction) {
+    public Person(String personName, int isDeleted, Transaction transaction,String personComments) {
         this.personName = personName;
+        this.personComments = personComments;
         this.isDeleted = isDeleted;
         this.transaction = transaction;
         this.personId = Integer.parseInt(null);
     }
 
-    public Person(int personId, String personName, int isDeleted,Transaction transaction) {
+    public Person(int personId, String personName, int isDeleted,Transaction transaction,String personComments) {
         this.personId = personId;
+        this.personComments = personComments;
         this.personName = personName;
         this.isDeleted = isDeleted;
         this.transaction = transaction;
@@ -66,12 +86,19 @@ public class Person {
         this.personName = personName;
     }
 
+    public void setTransactionList(ArrayList<Transaction> transactionList) {
+        this.transactionList = transactionList;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
-                "personId=" + personId +
+                "isDeleted=" + isDeleted +
+                ", personId=" + personId +
                 ", personName='" + personName + '\'' +
-                ", isDeleted=" + isDeleted +
+                ", transaction=" + transaction +
+                ", personComments='" + personComments + '\'' +
+                ", transactionList=" + transactionList +
                 '}';
     }
 
