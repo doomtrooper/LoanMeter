@@ -3,6 +3,7 @@ package com.bitnoobwa.loanmeter.helper;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.bitnoobwa.loanmeter.interfaces.TransactionInterface;
 import com.bitnoobwa.loanmeter.model.Person;
@@ -40,16 +41,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + TABLE_PERSON + "("
             + KEY_PERSON_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_PERSON_NAME + " TEXT UNIQUE,"
-            + KEY_TRANSACTION_AMOUNT + " DOUBLE NOT NULL"
-            + KEY_PERSON_IS_DELETED + " INTEGER DEFAULT 0," + KEY_PERSON_COMMENTS
-            + " TEXT," + ")";
+            + KEY_PERSON_IS_DELETED + " INTEGER DEFAULT 0,"
+            + KEY_PERSON_COMMENTS + " TEXT DEFAULT NULL" + ")";
 
     // Transaction table create statement
     private static final String CREATE_TABLE_TRANSACTION = "CREATE TABLE " + TABLE_TRANSACTION
             + "("
             + KEY_TRANSACTION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_TRANSACTION_PERSON_ID + " INTEGER,"
-            + KEY_TRANSACTION_TIMESTAMP + " INTEGER DEFAULT CURRENT_TIMESTAMP"
+            + KEY_TRANSACTION_TIMESTAMP + " INTEGER DEFAULT CURRENT_TIMESTAMP,"
+            + KEY_TRANSACTION_AMOUNT + " DOUBLE NOT NULL,"
             + " FOREIGN KEY(" + KEY_TRANSACTION_PERSON_ID + ") REFERENCES " + TABLE_PERSON + " (" + KEY_PERSON_ID + ")" + ")";
 
     public DatabaseHandler(Context context) {
@@ -59,6 +60,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // creating required tables
+        Log.v("onCreate","Inside onCreate");
         db.execSQL(CREATE_TABLE_PERSON);
         db.execSQL(CREATE_TABLE_TRANSACTION);
     }

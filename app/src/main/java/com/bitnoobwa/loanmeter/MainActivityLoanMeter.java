@@ -19,9 +19,10 @@ public class MainActivityLoanMeter extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EntryDataSource dataSource = new EntryDataSource(getApplicationContext());
-        ArrayList<Person> personArrayList = new ArrayList<>();
+        ArrayList<Person> personArrayList = new ArrayList<Person>();
         personArrayList = dataSource.allPersonList();
-        if(personArrayList.isEmpty() || personArrayList==null)
+
+        if(personArrayList.isEmpty())
             setContentView(R.layout.activity_main_activity_loan_meter_no_entry);
         else {
             setContentView(R.layout.activity_main_activity_loan_meter_listview);
@@ -56,7 +57,9 @@ public class MainActivityLoanMeter extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if(id == R.id.action_add_person){
 
+        }
         return super.onOptionsItemSelected(item);
     }
 }
