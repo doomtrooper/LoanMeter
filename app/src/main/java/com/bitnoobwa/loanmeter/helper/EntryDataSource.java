@@ -58,7 +58,8 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
     @Override
     public ArrayList<Transaction> getPersonTransactionList(int personID) {
         ArrayList<Transaction> transactionArrayList = new ArrayList<>();
-        String query = "SELECT * FROM "+DatabaseHandler.TABLE_TRANSACTION+" WHERE "+DatabaseHandler.KEY_TRANSACTION_PERSON_ID+" = "+personID;
+        String query = "SELECT * FROM "+DatabaseHandler.TABLE_TRANSACTION+" WHERE "
+                +DatabaseHandler.KEY_TRANSACTION_PERSON_ID+" = "+personID;
         read();
         Cursor cursor = database.rawQuery(query,null);
         cursor.moveToFirst();
@@ -85,13 +86,16 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
             write();
             database.insert(DatabaseHandler.TABLE_PERSON, null, values);
             close();
+            person.getTransaction().setPersonId(getPersonId(person.getPersonName()));
+            addTransaction(person.getTransaction());
         } else throw new PersonAlreadyExistsException("Person to be added already Exists");
     }
 
     @Override
     public ArrayList<Person> allPersonList() {
         ArrayList<Person> personArrayList = new ArrayList<>();
-        String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON + " WHERE " + DatabaseHandler.KEY_PERSON_IS_DELETED + " !=0";
+        String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON + " WHERE "
+                + DatabaseHandler.KEY_PERSON_IS_DELETED + " =0";
         read();
         Cursor cursor = database.rawQuery(query,null);
         cursor.moveToFirst();
@@ -112,7 +116,9 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
 
     @Override
     public Person getPerson(int personID) throws PersonNotUniqueException {
-        String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON + " WHERE " + DatabaseHandler.KEY_PERSON_ID + " = " + "'" + personID + "' AND " + DatabaseHandler.KEY_PERSON_IS_DELETED + " !=0";
+        String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON
+                + " WHERE " + DatabaseHandler.KEY_PERSON_ID + " = " + "'" + personID
+                + "' AND " + DatabaseHandler.KEY_PERSON_IS_DELETED + " =0";
         read();
         Cursor cursor = database.rawQuery(query, null);
         close();
@@ -132,7 +138,9 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
 
     @Override
     public Person getPerson(Person tempPerson) throws PersonNotUniqueException {
-        String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON + " WHERE " + DatabaseHandler.KEY_PERSON_ID + " = " + "'" + tempPerson.getPersonId() + "'";
+        String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON + " WHERE "
+                + DatabaseHandler.KEY_PERSON_ID + " = " + "'" + tempPerson.getPersonId()
+                + "' AND "+ DatabaseHandler.KEY_PERSON_IS_DELETED + "=0";
         read();
         Cursor cursor = database.rawQuery(query, null);
         close();
@@ -151,7 +159,9 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
     }
 
     public Person getPerson(String personName) throws PersonNotUniqueException {
-        String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON + " WHERE " + DatabaseHandler.KEY_PERSON_NAME + " = " + "'" + personName + "'";
+        String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON + " WHERE "
+                + DatabaseHandler.KEY_PERSON_NAME + " = " + "'" + personName
+                + "' AND "+ DatabaseHandler.KEY_PERSON_IS_DELETED + "=0";
         read();
         Cursor cursor = database.rawQuery(query, null);
         close();
@@ -171,14 +181,17 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
 
     @Override
     public int getPersonId(String personName) throws PersonNotUniqueException {
-        String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON + " WHERE " + DatabaseHandler.KEY_PERSON_NAME + " = " + "'" + personName + "'";
+        String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON + " WHERE "
+                + DatabaseHandler.KEY_PERSON_NAME + " = " + "'" + personName
+                + "' AND "+ DatabaseHandler.KEY_PERSON_IS_DELETED + "=0";
         read();
         Cursor cursor = database.rawQuery(query, null);
-        close();
         cursor.moveToFirst();
         if (cursor.getCount() != 1)
             throw new PersonNotUniqueException("NON Unique Person FOUND!!!!");
-        return cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_ID));
+        int personId = cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_ID));
+        close();
+        return personId;
     }
 
 }
