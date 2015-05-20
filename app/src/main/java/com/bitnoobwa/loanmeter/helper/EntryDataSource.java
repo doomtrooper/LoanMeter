@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.bitnoobwa.loanmeter.exceptions.PersonAlreadyExistsException;
 import com.bitnoobwa.loanmeter.exceptions.PersonNotUniqueException;
@@ -41,6 +42,7 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
     //Transaction Interface Implementation
     @Override
     public void addTransaction(Transaction transaction) {
+        //Log.v("Transaction add",transaction.toString());
         ContentValues values = new ContentValues();
         values.put(DatabaseHandler.KEY_TRANSACTION_PERSON_ID, transaction.getPersonId());
         values.put(DatabaseHandler.KEY_TRANSACTION_AMOUNT, transaction.getAmount());
@@ -57,20 +59,26 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
 
     @Override
     public ArrayList<Transaction> getPersonTransactionList(int personID) {
+        //Log.v("personIdgetTransaction",String.valueOf(personID));
         ArrayList<Transaction> transactionArrayList = new ArrayList<>();
         String query = "SELECT * FROM "+DatabaseHandler.TABLE_TRANSACTION+" WHERE "
                 +DatabaseHandler.KEY_TRANSACTION_PERSON_ID+" = "+personID;
+        //Log.v("query",query);
         read();
         Cursor cursor = database.rawQuery(query,null);
+        //Log.v("cursor",cursor.toString());
+        if(cursor.getCount()<=0) return null;
         cursor.moveToFirst();
-        while (cursor.moveToNext()){
+        do {
             Transaction transaction = new Transaction();
+            //Log.v("cursordetails",String.valueOf(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_TRANSACTION_PERSON_ID)))+String.valueOf(cursor.getDouble(cursor.getColumnIndex(DatabaseHandler.KEY_TRANSACTION_AMOUNT))));
             transaction.setPersonId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_TRANSACTION_PERSON_ID)));
             transaction.setAmount(cursor.getDouble(cursor.getColumnIndex(DatabaseHandler.KEY_TRANSACTION_AMOUNT)));
             transaction.setTransactionId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_TRANSACTION_ID)));
             transaction.setTimeStamp(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_TRANSACTION_TIMESTAMP)));
+            //Log.v("gettransaction",transaction.toString());
             transactionArrayList.add(transaction);
-        }
+        }while (cursor.moveToNext());
         close();
         return transactionArrayList;
     }
@@ -87,6 +95,7 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
             database.insert(DatabaseHandler.TABLE_PERSON, null, values);
             close();
             person.getTransaction().setPersonId(getPersonId(person.getPersonName()));
+            Log.v("Transaction addPerson",person.getTransaction().toString());
             addTransaction(person.getTransaction());
         } else throw new PersonAlreadyExistsException("Person to be added already Exists");
     }
@@ -98,18 +107,20 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
                 + DatabaseHandler.KEY_PERSON_IS_DELETED + " =0";
         read();
         Cursor cursor = database.rawQuery(query,null);
+        if(cursor.getCount()<=0) return null;
         cursor.moveToFirst();
-        while(cursor.moveToNext()){
+        do {
             Person person = new Person();
             person.setPersonName(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_NAME)));
             person.setPersonId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_ID)));
             person.setPersonComments(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_COMMENTS)));
+            Log.v("comments",person.getPersonComments());
             person.setIsDeleted(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_IS_DELETED)));
             //person.setIsDeleted(0);
             person.setTransaction(null);
             person.setTransactionList(getPersonTransactionList(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_ID))));
             personArrayList.add(person);
-        }
+        }while(cursor.moveToNext());
         close();
         return personArrayList;
     }
@@ -164,10 +175,11 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
                 + "' AND "+ DatabaseHandler.KEY_PERSON_IS_DELETED + "=0";
         read();
         Cursor cursor = database.rawQuery(query, null);
-        close();
         cursor.moveToFirst();
-        if (cursor.getCount() > 1)
+        if (cursor.getCount() > 1){
+            close();
             throw new PersonNotUniqueException("NON Unique Person FOUND!!!!");
+        }
         else if (cursor.getCount() == 0) return null;
         Person person = new Person();
         person.setPersonId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_ID)));
@@ -176,6 +188,7 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
         person.setPersonComments(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_COMMENTS)));
         person.setTransaction(null);
         person.setTransactionList(getPersonTransactionList(person.getPersonId()));
+        close();
         return person;
     }
 
@@ -190,6 +203,7 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
         if (cursor.getCount() != 1)
             throw new PersonNotUniqueException("NON Unique Person FOUND!!!!");
         int personId = cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_ID));
+        Log.v("person id",String.valueOf(personId));
         close();
         return personId;
     }

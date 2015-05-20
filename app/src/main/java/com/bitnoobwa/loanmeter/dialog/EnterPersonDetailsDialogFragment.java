@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -64,6 +65,7 @@ public class EnterPersonDetailsDialogFragment extends DialogFragment {
                         dialogValues[0] = ((EditText) dialogView.findViewById(R.id.enter_person_name)).getText().toString();
                         dialogValues[1] = ((EditText) dialogView.findViewById(R.id.enter_amount)).getText().toString();
                         dialogValues[2] = ((EditText) dialogView.findViewById(R.id.enter_comment)).getText().toString();
+                        //Log.v("dialog values",dialogValues[0]+dialogValues[1]+dialogValues[2]);
                         mListener.onDialogPositiveClick(EnterPersonDetailsDialogFragment.this,dialogValues);
                     }
                 })

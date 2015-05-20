@@ -1,6 +1,7 @@
 package com.bitnoobwa.loanmeter.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class PersonCustomAdapter extends ArrayAdapter<Person> {
         try{
             amount=person.getTotalTransactionAmount();
         }catch (EmptyTransactionListException exp){
+            Log.v("EmptyTransactionListException",exp.getMessage());
             amount=0.0;
         }
         if (convertView == null)
@@ -40,6 +42,7 @@ public class PersonCustomAdapter extends ArrayAdapter<Person> {
         TextView personName=(TextView) convertView.findViewById(R.id.person_name);
         TextView personAmount=(TextView) convertView.findViewById(R.id.person_amount);
         // Populate the data into the template view using the data object
+        Log.v("listviewDetails",person.getPersonName()+" "+amount.toString());
         personName.setText(person.getPersonName());
         personAmount.setText(amount.toString());
         // Return the completed view to render on screen

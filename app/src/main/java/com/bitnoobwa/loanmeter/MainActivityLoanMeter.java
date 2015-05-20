@@ -15,6 +15,7 @@ import com.bitnoobwa.loanmeter.exceptions.PersonNotUniqueException;
 import com.bitnoobwa.loanmeter.helper.EntryDataSource;
 import com.bitnoobwa.loanmeter.model.Person;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -84,7 +85,9 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
         // User touched the dialog's positive button
         //dialog.getText(R.id.enter_person_name);
         try {
+            //Log.v("dialog values",dialogValues[0]+dialogValues[1]+dialogValues[2]);
             dataSource.addPerson(createNewPerson(dialogValues));
+            //Log.v("Person added", dataSource.getPerson("b").toString());
         }catch (PersonAlreadyExistsException alreadyExistsExp){
             Log.v("exception", alreadyExistsExp.getMessage());
         }catch (PersonNotUniqueException notUniqueExp){
@@ -94,11 +97,13 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
     }
 
     public Person createNewPerson(String[] values){
+        Log.v("dialog values 2",values[0]+values[1]+values[2]);
         Person person = new Person();
         person.setPersonName(values[0]);
         person.getTransaction().setAmount(Double.parseDouble(values[1]));
         person.getTransaction().setTimeStamp((int)System.currentTimeMillis()); //Unix Time STamp
         person.setPersonComments(values[2]);
+        Log.v("Person details",person.toString());
         return person;
     }
     @Override

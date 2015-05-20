@@ -24,6 +24,7 @@ public class Person {
     }
 
     public Person() {
+        this.transaction = new Transaction();
     }
 
     public Transaction getTransaction() {
