@@ -42,7 +42,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + KEY_PERSON_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_PERSON_NAME + " TEXT UNIQUE,"
             + KEY_PERSON_IS_DELETED + " INTEGER DEFAULT 0,"
-            + KEY_PERSON_COMMENTS + " TEXT DEFAULT NULL" + ")";
+            + KEY_PERSON_COMMENTS + " TEXT DEFAULT 'No Comments'" + ")";
 
     // Transaction table create statement
     private static final String CREATE_TABLE_TRANSACTION = "CREATE TABLE " + TABLE_TRANSACTION

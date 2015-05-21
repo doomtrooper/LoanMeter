@@ -125,6 +125,14 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
         return personArrayList;
     }
 
+    public SQLiteDatabase getDatabase() {
+        return database;
+    }
+
+    public DatabaseHandler getDbHandler() {
+        return dbHandler;
+    }
+
     @Override
     public Person getPerson(int personID) throws PersonNotUniqueException {
         String query = "SELECT * from " + DatabaseHandler.TABLE_PERSON
