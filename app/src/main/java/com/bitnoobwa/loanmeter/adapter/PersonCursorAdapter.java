@@ -24,16 +24,13 @@ public class PersonCursorAdapter extends CursorAdapter{
 
 
     public PersonCursorAdapter(Context context, Cursor cursor) {
-
         super(context, cursor, 0);
-        Log.v("cursor",String.valueOf(cursor.getCount()));
     }
 
     // The newView method is used to inflate a new view and return it,
     // you don't bind any data to the view at this point.
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        Log.v("inside newView",String.valueOf(cursor.getCount()));
         return LayoutInflater.from(context).inflate(R.layout.activity_main_row_layout2, parent, false);
     }
 
@@ -60,7 +57,6 @@ public class PersonCursorAdapter extends CursorAdapter{
             Log.v("EmptyTransactionListException",exp.getMessage());
             amount=0.0;
         }
-        Log.v("bindView",String.valueOf(amount)+" "+String.valueOf(person.getPersonName()));
         // Populate fields with extracted properties
         personName.setText(person.getPersonName());
         personAmount.setText(String.valueOf(amount));

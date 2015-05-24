@@ -1,6 +1,8 @@
 package com.bitnoobwa.loanmeter;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.bitnoobwa.loanmeter.adapter.PersonCursorAdapter;
 import com.bitnoobwa.loanmeter.adapter.PersonCustomAdapter;
@@ -91,10 +94,29 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
             personCursorAdapter.swapCursor(newPersonCursor);
             dataSource.close();
             //Log.v("Person added", dataSource.getPerson("b").toString());
-        }catch (PersonAlreadyExistsException alreadyExistsExp){
+        }catch (PersonAlreadyExistsException | PersonNotUniqueException alreadyExistsExp){
             Log.v("exception", alreadyExistsExp.getMessage());
-        }catch (PersonNotUniqueException notUniqueExp){
-            Log.v("exception", notUniqueExp.getMessage());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            // set title
+            alertDialogBuilder.setTitle("Error");
+            //set icon
+            alertDialogBuilder.setIcon(R.drawable.error);
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage("Person with same name already Exists!!!")
+                    .setCancelable(false)
+                    .setNegativeButton("Back",new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,int id) {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    });
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
         }
         dialog.dismiss();
         //PersonCustomAdapter adapter = (PersonCustomAdapter) getListAdapter();
