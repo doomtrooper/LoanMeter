@@ -14,6 +14,7 @@ import com.bitnoobwa.loanmeter.adapter.PersonCustomAdapter;
 import com.bitnoobwa.loanmeter.dialog.EnterPersonDetailsDialogFragment;
 import com.bitnoobwa.loanmeter.exceptions.PersonAlreadyExistsException;
 import com.bitnoobwa.loanmeter.exceptions.PersonNotUniqueException;
+import com.bitnoobwa.loanmeter.helper.DatabaseDetails;
 import com.bitnoobwa.loanmeter.helper.DatabaseHandler;
 import com.bitnoobwa.loanmeter.helper.EntryDataSource;
 import com.bitnoobwa.loanmeter.model.Person;
@@ -25,44 +26,22 @@ import java.util.ArrayList;
 public class MainActivityLoanMeter extends AppCompatActivity implements EnterPersonDetailsDialogFragment.EnterPersonDetailsDialogListener {
 
     private EntryDataSource dataSource;
+    private PersonCursorAdapter personCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Below is a SQLiteOpenHelper class connecting to SQLite
         dataSource = new EntryDataSource(getApplicationContext());
-        /*ArrayList<Person> personArrayList = dataSource.allPersonList();
-        if(personArrayList.isEmpty())
-            setContentView(R.layout.activity_main_activity_loan_meter_no_entry);
-        else {
-            setContentView(R.layout.activity_main_activity_loan_meter_listview);
-            populateEntriesListView(personArrayList);
-        }*/
-        setContentView(R.layout.activity_main_activity_loan_meter);
 
         // Get access to the underlying writeable database
         dataSource.read();
-        // Query for items from the database and get a cursor back
-        String query = "SELECT "+DatabaseHandler.KEY_PERSON_ID+" as _id "+"from "
-                + DatabaseHandler.TABLE_PERSON + " WHERE "
-                + DatabaseHandler.KEY_PERSON_IS_DELETED + " =0";
-        Cursor personCursor = dataSource.getDatabase().rawQuery(query, null);
-        //personCursor.moveToFirst();
-        populateEntriesListView(personCursor);
-    }
-
-   /* private void populateEntriesListView(ArrayList<Person> personArrayList) {
-        PersonCustomAdapter personCustomAdapter = new PersonCustomAdapter(this,R.layout.activity_main_row_layout2,personArrayList);
+        Cursor personCursor = dataSource.getDatabase().rawQuery(DatabaseDetails.AllPerson_Query, null);
+        setContentView(R.layout.activity_main_activity_loan_meter_listview);
+        personCursorAdapter = new PersonCursorAdapter(this,personCursor);
         ListView listView = (ListView) findViewById(R.id.lvPerson);
-        listView.setAdapter(personCustomAdapter);
-    }*/
-
-    private void populateEntriesListView(Cursor personCursor) {
-        PersonCursorAdapter personCursorAdapter = new PersonCursorAdapter(this,personCursor);
-        ListView listView = (ListView) findViewById(R.id.lvPerson);
-        Log.v("lvPerson",listView.toString());
         listView.setAdapter(personCursorAdapter);
-
+        dataSource.close();
     }
 
     @Override
@@ -107,6 +86,10 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
         try {
             //Log.v("dialog values",dialogValues[0]+dialogValues[1]+dialogValues[2]);
             dataSource.addPerson(createNewPerson(dialogValues));
+            dataSource.read();
+            Cursor newPersonCursor = dataSource.getDatabase().rawQuery(DatabaseDetails.AllPerson_Query, null);
+            personCursorAdapter.swapCursor(newPersonCursor);
+            dataSource.close();
             //Log.v("Person added", dataSource.getPerson("b").toString());
         }catch (PersonAlreadyExistsException alreadyExistsExp){
             Log.v("exception", alreadyExistsExp.getMessage());

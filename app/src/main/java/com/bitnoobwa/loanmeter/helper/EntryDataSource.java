@@ -140,7 +140,7 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
                 + "' AND " + DatabaseHandler.KEY_PERSON_IS_DELETED + " =0";
         read();
         Cursor cursor = database.rawQuery(query, null);
-        close();
+
         cursor.moveToFirst();
         if (cursor.getCount() > 1)
             throw new PersonNotUniqueException("NON Unique Person FOUND!!!!");
@@ -152,6 +152,7 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
         person.setPersonComments(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PERSON_COMMENTS)));
         person.setTransaction(null);
         person.setTransactionList(getPersonTransactionList(person.getPersonId()));
+        close();
         return person;
     }
 

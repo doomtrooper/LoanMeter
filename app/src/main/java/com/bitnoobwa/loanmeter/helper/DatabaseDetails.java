@@ -26,4 +26,9 @@ public interface DatabaseDetails {
     public static String KEY_Transaction_Person_Id = "personId";
     public static String KEY_Transaction_Amount = "transactionAmount";
     public static String KEY_Transaction_TimeStamp = "transactionTimeStamp";
+
+    //queries
+    public static String AllPerson_Query = "SELECT "+DatabaseHandler.KEY_PERSON_ID+" as _id "+"from "
+            + DatabaseHandler.TABLE_PERSON + " WHERE "
+            + DatabaseHandler.KEY_PERSON_IS_DELETED + " =0";
 }
