@@ -11,8 +11,11 @@
     <string name="personAmount">123</string>
     <string name="name_hint">Person Name...</string>
     <string name="amount_hint">Amount...</string>
-    <string name="comment_hint">Comment...</string>
+    <string name="comment_hint">Comment(Optional)...</string>
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
+
+    <string name="createPersonTitle">Add Person</string>
+    <string name="options">Options</string>
 
 </resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="person_options">
+        <item>Update Name</item>
+        <item>Update Transaction</item>
+        <item>Show Comments</item>
+        <item>Show History</item>
+        <item>Delete</item>
+    </string-array>
+</resources>

@@ -40,7 +40,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_PERSON = "CREATE TABLE "
             + TABLE_PERSON + "("
             + KEY_PERSON_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + KEY_PERSON_NAME + " TEXT UNIQUE,"
+            + KEY_PERSON_NAME + " TEXT UNIQUE NOT NULL,"
             + KEY_PERSON_IS_DELETED + " INTEGER DEFAULT 0,"
             + KEY_PERSON_COMMENTS + " TEXT DEFAULT 'No Comments'" + ")";
 

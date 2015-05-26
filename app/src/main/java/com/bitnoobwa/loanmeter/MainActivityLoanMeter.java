@@ -9,12 +9,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bitnoobwa.loanmeter.adapter.PersonCursorAdapter;
 import com.bitnoobwa.loanmeter.adapter.PersonCustomAdapter;
 import com.bitnoobwa.loanmeter.dialog.EnterPersonDetailsDialogFragment;
+import com.bitnoobwa.loanmeter.dialog.PersonOptionsDialogFragment;
 import com.bitnoobwa.loanmeter.exceptions.PersonAlreadyExistsException;
 import com.bitnoobwa.loanmeter.exceptions.PersonNotUniqueException;
 import com.bitnoobwa.loanmeter.helper.DatabaseDetails;
@@ -44,8 +47,40 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
         personCursorAdapter = new PersonCursorAdapter(this,personCursor);
         ListView listView = (ListView) findViewById(R.id.lvPerson);
         listView.setAdapter(personCursorAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                int personId = cursor.getInt(cursor.getColumnIndex("_id"));
+                //Log.v("personId",String.valueOf(personId));
+
+
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                int personId = cursor.getInt(cursor.getColumnIndex("_id"));
+                Person person = null;
+                try {
+                    person = dataSource.getPerson(personId);
+                }catch (PersonNotUniqueException e){
+                    Log.v("exp",e.getMessage());
+                }
+                //Log.v("personId",String.valueOf(personId));
+                Bundle argsPersonDetails = new Bundle();
+                argsPersonDetails.putString("personName",person.getPersonName());
+                argsPersonDetails.putInt("personId",personId);
+                DialogFragment optionsDialog = new PersonOptionsDialogFragment();
+                optionsDialog.setArguments(argsPersonDetails);
+                optionsDialog.show(getFragmentManager(),"PersonOptionsDialogFragment");
+                return  true;
+            }
+        });
         dataSource.close();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,13 +123,31 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
         //dialog.getText(R.id.enter_person_name);
         try {
             //Log.v("dialog values",dialogValues[0]+dialogValues[1]+dialogValues[2]);
-            dataSource.addPerson(createNewPerson(dialogValues));
-            dataSource.read();
-            Cursor newPersonCursor = dataSource.getDatabase().rawQuery(DatabaseDetails.AllPerson_Query, null);
-            personCursorAdapter.swapCursor(newPersonCursor);
-            dataSource.close();
+            if(dialogValues[0].equals("") || dialogValues[1].equals("") || dialogValues[0] == null || dialogValues[1]== null){
+                dialog.dismiss();
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle("Empty Field(s)");
+                alertDialogBuilder.setIcon(R.drawable.error);
+                alertDialogBuilder
+                        .setMessage("One of the required fields was empty...")
+                        .setCancelable(false)
+                        .setNegativeButton("Back",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }else {
+                dataSource.addPerson(createNewPerson(dialogValues));
+                dataSource.read();
+                Cursor newPersonCursor = dataSource.getDatabase().rawQuery(DatabaseDetails.AllPerson_Query, null);
+                personCursorAdapter.swapCursor(newPersonCursor);
+                dataSource.close();
+            }
             //Log.v("Person added", dataSource.getPerson("b").toString());
         }catch (PersonAlreadyExistsException | PersonNotUniqueException alreadyExistsExp){
+            dialog.dismiss();
             Log.v("exception", alreadyExistsExp.getMessage());
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
             // set title
@@ -119,7 +172,6 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
             alertDialog.show();
         }
         dialog.dismiss();
-        //PersonCustomAdapter adapter = (PersonCustomAdapter) getListAdapter();
     }
 
     public Person createNewPerson(String[] values){

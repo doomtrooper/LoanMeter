@@ -54,6 +54,8 @@ public class EnterPersonDetailsDialogFragment extends DialogFragment {
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         final View dialogView = inflater.inflate(R.layout.activity_main_dialog_box, null);
+        builder.setIcon(R.drawable.ic_user);
+        builder.setTitle(R.string.createPersonTitle);
         builder.setView(dialogView)
                 // Add action buttons
                 .setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
