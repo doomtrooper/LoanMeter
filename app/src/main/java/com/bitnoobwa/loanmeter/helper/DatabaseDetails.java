@@ -31,4 +31,9 @@ public interface DatabaseDetails {
     public static String AllPerson_Query = "SELECT "+DatabaseHandler.KEY_PERSON_ID+" as _id "+"from "
             + DatabaseHandler.TABLE_PERSON + " WHERE "
             + DatabaseHandler.KEY_PERSON_IS_DELETED + " =0";
+
+    public static String deletePersonQuery = "UPDATE "
+            +DatabaseHandler.TABLE_PERSON+" SET "
+            +DatabaseHandler.KEY_PERSON_IS_DELETED+" =1 WHERE "
+            +DatabaseHandler.KEY_PERSON_ID+" = ?";
 }

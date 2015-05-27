@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.bitnoobwa.loanmeter.exceptions.PersonAlreadyExistsException;
+import com.bitnoobwa.loanmeter.exceptions.PersonNotFoundException;
 import com.bitnoobwa.loanmeter.exceptions.PersonNotUniqueException;
 import com.bitnoobwa.loanmeter.interfaces.PersonInterface;
 import com.bitnoobwa.loanmeter.interfaces.TransactionInterface;
@@ -215,6 +216,13 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
         Log.v("person id",String.valueOf(personId));
         close();
         return personId;
+    }
+
+    @Override
+    public void deletePerson(int personId) throws PersonNotUniqueException, PersonNotFoundException {
+        write();
+        ContentValues values = new ContentValues();
+
     }
 
 }

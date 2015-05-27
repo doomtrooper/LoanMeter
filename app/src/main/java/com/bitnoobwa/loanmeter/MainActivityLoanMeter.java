@@ -19,6 +19,7 @@ import com.bitnoobwa.loanmeter.adapter.PersonCustomAdapter;
 import com.bitnoobwa.loanmeter.dialog.EnterPersonDetailsDialogFragment;
 import com.bitnoobwa.loanmeter.dialog.PersonOptionsDialogFragment;
 import com.bitnoobwa.loanmeter.exceptions.PersonAlreadyExistsException;
+import com.bitnoobwa.loanmeter.exceptions.PersonNotFoundException;
 import com.bitnoobwa.loanmeter.exceptions.PersonNotUniqueException;
 import com.bitnoobwa.loanmeter.helper.DatabaseDetails;
 import com.bitnoobwa.loanmeter.helper.DatabaseHandler;
@@ -29,7 +30,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-public class MainActivityLoanMeter extends AppCompatActivity implements EnterPersonDetailsDialogFragment.EnterPersonDetailsDialogListener {
+public class MainActivityLoanMeter extends AppCompatActivity implements EnterPersonDetailsDialogFragment.EnterPersonDetailsDialogListener,PersonOptionsDialogFragment.PersonOptionsDialogListener {
 
     private EntryDataSource dataSource;
     private PersonCursorAdapter personCursorAdapter;
@@ -188,5 +189,31 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
     public void onDialogNegativeClick(DialogFragment dialog) {
         // User touched the dialog's negative button
         dialog.dismiss();
+    }
+
+    @Override
+    public void onDeleteListener(DialogFragment dialogFragment, final int personId, String personName) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Delete "+personName);
+        alertDialogBuilder.setIcon(R.drawable.error);
+        alertDialogBuilder
+                .setMessage("Are you sure, you want to delete "+personName+"??")
+                .setCancelable(false)
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        try {
+                            dataSource.deletePerson(personId);
+                        } catch (PersonNotUniqueException | PersonNotFoundException e) {
+                            Log.v("delete Person",e.getMessage());
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

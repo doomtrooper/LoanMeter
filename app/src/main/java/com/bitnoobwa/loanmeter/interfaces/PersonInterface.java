@@ -1,6 +1,7 @@
 package com.bitnoobwa.loanmeter.interfaces;
 
 import com.bitnoobwa.loanmeter.exceptions.PersonAlreadyExistsException;
+import com.bitnoobwa.loanmeter.exceptions.PersonNotFoundException;
 import com.bitnoobwa.loanmeter.exceptions.PersonNotUniqueException;
 import com.bitnoobwa.loanmeter.model.Person;
 
@@ -16,6 +17,7 @@ public interface PersonInterface {
     public Person getPerson(Person person) throws PersonNotUniqueException;
     public Person getPerson(String personName) throws PersonNotUniqueException;
     public int getPersonId(String personName) throws PersonNotUniqueException;
+    public void deletePerson(int personId) throws PersonNotUniqueException,PersonNotFoundException;
     //public void updatePersonName();
 
 }
