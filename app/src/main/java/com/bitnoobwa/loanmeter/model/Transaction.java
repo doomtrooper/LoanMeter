@@ -15,10 +15,12 @@ public class Transaction {
     public Transaction(int timeStamp, double amount) {
         this.timeStamp = timeStamp;
         this.amount = amount;
-        this.transactionId = Integer.parseInt(null);
-        this.personId = Integer.parseInt(null);
     }
-
+    public Transaction(int timeStamp, double amount, int personId){
+        this.timeStamp = timeStamp;
+        this.amount = amount;
+        this.personId = personId;
+    }
     public Transaction(int transactionId, double amount, int timeStamp, int personId) {
         this.transactionId = transactionId;
         this.amount = amount;

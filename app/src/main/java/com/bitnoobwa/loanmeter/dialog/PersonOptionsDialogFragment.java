@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.bitnoobwa.loanmeter.R;
 
@@ -26,6 +27,7 @@ public class PersonOptionsDialogFragment extends DialogFragment{
 
     public interface PersonOptionsDialogListener{
         public void onDeleteListener(DialogFragment dialogFragment,int personId,String personName);
+        public void onUpdateTransactionListener(DialogFragment dialogFragment,int personId,String personName);
     }
 
     PersonOptionsDialogListener mListener;
@@ -54,11 +56,15 @@ public class PersonOptionsDialogFragment extends DialogFragment{
         builder.setTitle(personName)
                 .setItems(R.array.person_options, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // The 'which' argument contains the index position
-                        // of the selected item
+                        // The 'which' argument contains the index position of the selected item
+                        Log.v("which",String.valueOf(which));
                         switch (which){
                             case 1:
+                                mListener.onUpdateTransactionListener(PersonOptionsDialogFragment.this,getPersonId(),personName);
+                                break;
+                            case 4:
                                 mListener.onDeleteListener(PersonOptionsDialogFragment.this,getPersonId(),personName);
+                                break;
                         }
                     }
                 });

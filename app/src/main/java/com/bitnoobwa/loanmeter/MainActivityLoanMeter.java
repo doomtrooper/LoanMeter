@@ -18,6 +18,7 @@ import com.bitnoobwa.loanmeter.adapter.PersonCursorAdapter;
 import com.bitnoobwa.loanmeter.adapter.PersonCustomAdapter;
 import com.bitnoobwa.loanmeter.dialog.EnterPersonDetailsDialogFragment;
 import com.bitnoobwa.loanmeter.dialog.PersonOptionsDialogFragment;
+import com.bitnoobwa.loanmeter.dialog.UpdateTransactionDialogFragment;
 import com.bitnoobwa.loanmeter.exceptions.PersonAlreadyExistsException;
 import com.bitnoobwa.loanmeter.exceptions.PersonNotFoundException;
 import com.bitnoobwa.loanmeter.exceptions.PersonNotUniqueException;
@@ -25,12 +26,13 @@ import com.bitnoobwa.loanmeter.helper.DatabaseDetails;
 import com.bitnoobwa.loanmeter.helper.DatabaseHandler;
 import com.bitnoobwa.loanmeter.helper.EntryDataSource;
 import com.bitnoobwa.loanmeter.model.Person;
+import com.bitnoobwa.loanmeter.model.Transaction;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-public class MainActivityLoanMeter extends AppCompatActivity implements EnterPersonDetailsDialogFragment.EnterPersonDetailsDialogListener,PersonOptionsDialogFragment.PersonOptionsDialogListener {
+public class MainActivityLoanMeter extends AppCompatActivity implements EnterPersonDetailsDialogFragment.EnterPersonDetailsDialogListener,PersonOptionsDialogFragment.PersonOptionsDialogListener,UpdateTransactionDialogFragment.UpdateTransactionDialogListener {
 
     private EntryDataSource dataSource;
     private PersonCursorAdapter personCursorAdapter;
@@ -141,10 +143,7 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
                 alertDialog.show();
             }else {
                 dataSource.addPerson(createNewPerson(dialogValues));
-                dataSource.read();
-                Cursor newPersonCursor = dataSource.getDatabase().rawQuery(DatabaseDetails.AllPerson_Query, null);
-                personCursorAdapter.swapCursor(newPersonCursor);
-                dataSource.close();
+                swapCursor();
             }
             //Log.v("Person added", dataSource.getPerson("b").toString());
         }catch (PersonAlreadyExistsException | PersonNotUniqueException alreadyExistsExp){
@@ -182,7 +181,7 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
         person.getTransaction().setAmount(Double.parseDouble(values[1]));
         person.getTransaction().setTimeStamp((int)System.currentTimeMillis()); //Unix Time STamp
         person.setPersonComments(values[2]);
-        Log.v("Person details",person.toString());
+        Log.v("Person details", person.toString());
         return person;
     }
     @Override
@@ -192,7 +191,8 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
     }
 
     @Override
-    public void onDeleteListener(DialogFragment dialogFragment, final int personId, String personName) {
+    public void onDeleteListener(DialogFragment dialogFragment,final int personId, String personName) {
+        //Log.v("onDeleteListener","inside onDeleteListener");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setTitle("Delete "+personName);
         alertDialogBuilder.setIcon(R.drawable.error);
@@ -203,6 +203,7 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
                     public void onClick(DialogInterface dialog, int id) {
                         try {
                             dataSource.deletePerson(personId);
+                            swapCursor();
                         } catch (PersonNotUniqueException | PersonNotFoundException e) {
                             Log.v("delete Person",e.getMessage());
                         }
@@ -215,5 +216,43 @@ public class MainActivityLoanMeter extends AppCompatActivity implements EnterPer
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    @Override
+    public void onUpdateTransactionListener(DialogFragment dialogFragment, int personId, String personName) {
+        dialogFragment.dismiss();
+        Bundle argsPersonDetails = new Bundle();
+        argsPersonDetails.putString("personName",personName);
+        argsPersonDetails.putInt("personId", personId);
+        DialogFragment editTransactionDialog = new UpdateTransactionDialogFragment();
+        editTransactionDialog.setArguments(argsPersonDetails);
+        editTransactionDialog.show(getFragmentManager(), "PersonOptionsDialogFragment");
+    }
+
+    private void swapCursor(){
+        dataSource.read();
+        Cursor newPersonCursor = dataSource.getDatabase().rawQuery(DatabaseDetails.AllPerson_Query, null);
+        personCursorAdapter.swapCursor(newPersonCursor);
+        dataSource.close();
+    }
+
+    @Override
+    public void onPersistPositiveTransaction(DialogFragment dialog, String transactionAmount,int personId) {
+        //Log.v("transaction","inside  onPersistPositiveTransaction");
+        Transaction newTransaction = new Transaction((int)System.currentTimeMillis(),Double.valueOf(transactionAmount),personId);
+        dataSource.write();
+        dataSource.addTransaction(newTransaction);
+        dataSource.close();
+        swapCursor();
+    }
+
+    @Override
+    public void onPersistNegativeTransaction(DialogFragment dialog, String transactionAmount,int personId) {
+        Log.v("transaction","inside  onPersistNegativeTransaction");
+        Transaction newTransaction = new Transaction((int)System.currentTimeMillis(),-1*Double.valueOf(transactionAmount),personId);
+        dataSource.write();
+        dataSource.addTransaction(newTransaction);
+        dataSource.close();
+        swapCursor();
     }
 }

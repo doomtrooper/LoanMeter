@@ -222,7 +222,9 @@ public class EntryDataSource implements TransactionInterface, PersonInterface {
     public void deletePerson(int personId) throws PersonNotUniqueException, PersonNotFoundException {
         write();
         ContentValues values = new ContentValues();
-
+        values.put(DatabaseHandler.KEY_PERSON_IS_DELETED,1);
+        database.update(DatabaseHandler.TABLE_PERSON,values,DatabaseHandler.KEY_PERSON_ID+" = "+personId, null);
+        close();
     }
 
 }
